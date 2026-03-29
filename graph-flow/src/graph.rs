@@ -148,14 +148,11 @@ impl Graph {
                         },
                     })
                 } else {
-                    // No next task found, stay at current task
-                    session.current_task_id = result.task_id.clone();
+                    // No next task found — this is the last node in the graph.
+                    // Return Completed so the engine's step loop terminates.
                     Ok(ExecutionResult {
                         response: result.response,
-                        status: ExecutionStatus::Paused { 
-                            next_task_id: result.task_id.clone(),
-                            reason: "No outgoing edge found from current task".to_string(),
-                        },
+                        status: ExecutionStatus::Completed,
                     })
                 }
             }
@@ -172,14 +169,11 @@ impl Graph {
                     // Recursively call execute_session to maintain proper context sharing
                     return Box::pin(self.execute_session(session)).await;
                 } else {
-                    // No next task found, stay at current task
-                    session.current_task_id = result.task_id.clone();
+                    // No next task found — this is the last node in the graph.
+                    // Return Completed so the engine's step loop terminates.
                     Ok(ExecutionResult {
                         response: result.response,
-                        status: ExecutionStatus::Paused { 
-                            next_task_id: result.task_id.clone(),
-                            reason: "No outgoing edge found from current task".to_string(),
-                        },
+                        status: ExecutionStatus::Completed,
                     })
                 }
             }
